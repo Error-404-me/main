@@ -19,6 +19,7 @@ from kivy_garden.graph import Graph, MeshLinePlot
 from random import randint
 from kivymd.toast import toast
 import threading
+from datetime import timedelta
 
 KV = '''
 MDScreen:
@@ -109,13 +110,13 @@ MDScreen:
                                             md_bg_color: app.theme_cls.primary_color
                                             radius: [12]
                                             MDLabel:
-                                                text: "Days"
+                                                text: "Day"
                                                 halign: "center"
                                                 theme_text_color: "Custom"
                                                 text_color: 1,1,1,0.9
                                             MDLabel:
                                                 id: days_label
-                                                text: "10"
+                                                text: "0"
                                                 halign: "center"
                                                 font_style: "H4"
                                                 text_color: 1,1,1,1
@@ -384,6 +385,9 @@ MDScreen:
                                     icon: 'skip-forward'
 '''
 
+day = 0
+days_of_incubation = timedelta(days=21)
+
 class CameraWidget(Image):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -452,12 +456,13 @@ class EggCubatorApp(MDApp):
 
         # Auto update
         Clock.schedule_interval(self.update_data, 2)
+        Clock.schedule_interval(self.update_day, 10)  # for testing only
         return screen
 
-    def switch_screen(self, name):
+    def switch_screen(self, name): #para sa MDBottomNavigation
         self.root.ids.current = name
 
-    def _switch_screen(self, name):
+    def _switch_screen(self, name): #para sa scanning og home screen
         self.root.ids.screen_manager.current = name
 
     def update_data(self, *args):
@@ -474,6 +479,14 @@ class EggCubatorApp(MDApp):
 
         self.root.ids.temp_label.text = f"{new_temp:.1f}"
         self.root.ids.hum_label.text = f"{new_hum:.0f}"
+
+    def update_day(self, *args):
+        global day
+        if day < days_of_incubation.days:
+            day += 1
+            self.root.ids.days_label.text = str(day)
+        else:
+            toast("Incubation complete!")
 
     def _toast(self, button):
         btn = self.root.ids[button]
