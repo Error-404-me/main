@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Computer Lab Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h1>Computer Lab Monitoring</h1>
+
+<div class="stats">
+    <p>Total Computers: <b>{{ total }}</b></p>
+    <p>In Use: <b style="color:green">{{ in_use }}</b></p>
+    <p>Not Used: <b style="color:red">{{ not_used }}</b></p>
+</div>
+
+<table>
+    <tr>
+        <th>PC</th>
+        <th>Status</th>
+        <th>User</th>
+        <th>Last Update</th>
+    </tr>
+
+    {% for pc, info in computers.items() %}
+    <tr>
+        <td>{{ pc }}</td>
+        <td>{{ info['status'] }}</td>
+        <td>{{ info['user'] }}</td>
+        <td>{{ info['last'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    setTimeout(() => { location.reload(); }, 3000); // auto refresh every 3 sec
+</script>
+
+</body>
+</html>
